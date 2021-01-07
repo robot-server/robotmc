@@ -2,6 +2,11 @@
 
 minecraft_dir=~/minecraft
 
+if [ $# -ne 2 ]; then
+    echo Usage: recovery.sh backup level_name
+    exit 1
+fi
+
 backup=$1
 level_name=$2
 
