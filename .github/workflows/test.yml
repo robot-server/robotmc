@@ -1,0 +1,20 @@
+name: Test
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Download Minecraft Server
+        uses: wei/curl@master
+        with:
+          args: ${{ vars.SERVER_JAR_DOWNLOAD_URL }} -o server.jar
+
+      - name: Start Minecraft Server
+        run: |
+          sh main.sh
