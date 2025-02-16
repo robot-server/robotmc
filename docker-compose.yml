@@ -1,6 +1,6 @@
 services:
     minecraft:
-        image: amazoncorretto:17
+        image: amazoncorretto:21
         volumes:
             - ${MINECRAFT_DIR}:/minecraft
         working_dir: /minecraft
