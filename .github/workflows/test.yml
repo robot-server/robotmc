@@ -14,6 +14,9 @@ jobs:
         uses: wei/curl@master
         with:
           args: ${{ vars.SERVER_JAR_DOWNLOAD_URL }} -o server.jar
+        run: |
+          pwd
+          ls -al
 
       - name: Start Minecraft Server
         run: |
