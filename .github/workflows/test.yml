@@ -17,4 +17,4 @@ jobs:
 
       - name: Start Minecraft Server
         run: |
-          docker compose up -e MINECRAFT_DIR=/github/workflow/minecraft
+          docker compose run minecraft -e MINECRAFT_DIR=/github/workflow/minecraft
