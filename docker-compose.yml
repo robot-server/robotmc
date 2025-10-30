@@ -4,6 +4,7 @@ services:
         volumes:
             - ${MINECRAFT_DIR}:/minecraft
             - ./:/robotmc
+            - ./backup:/backup
         working_dir: /robotmc
         ports:
             - ${SERVER_PORT}:25565
