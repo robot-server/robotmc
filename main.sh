@@ -1,16 +1,14 @@
 #!/bin/bash
 
 work_dir=$(pwd)
-minecraft_dir=~/minecraft
-server_jar=server.jar
-option=nogui
+source .env
+echo ${MINECRAFT_DIR}/${SERVER_JAR}
 
-jvm_heap_size=1024M
-
-while [ -f ${minecraft_dir}/${server_jar} ]
+chmod +x ./backup.sh
+while [ -f ${MINECRAFT_DIR}/${SERVER_JAR} ]
 do
-	cd ${minecraft_dir}
-	java -Xms${jvm_heap_size} -Xmx${jvm_heap_size} -jar ${server_jar} ${option}
+	cd ${MINECRAFT_DIR}
+	java -Xms${JVM_HEAP_SIZE} -Xmx${JVM_HEAP_SIZE} -jar ${SERVER_JAR} ${OPTION}
 	cd ${work_dir}
-	sh backup.sh
+	./backup.sh
 done

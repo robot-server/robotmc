@@ -1,11 +1,10 @@
 #!/bin/bash
 
-minecraft_dir=~/minecraft
 level_name=world
-backup_dir=backup
+backup_dir=../backup
 
 timestamp=$(date +%Y-%m-%d_%H-%M-%S)
-cd ${minecraft_dir}
+cd ${MINECRAFT_DIR}
 if [ ! -d ${backup_dir} ]; then
 	mkdir ${backup_dir}
 fi

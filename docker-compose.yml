@@ -1,10 +1,11 @@
 services:
     minecraft:
-        image: amazoncorretto:21
+        image: eclipse-temurin:21
         volumes:
             - ${MINECRAFT_DIR}:/minecraft
-        working_dir: /minecraft
+            - ./:/robotmc
+        working_dir: /robotmc
         ports:
             - ${SERVER_PORT}:25565
             - ${RCON_PORT}:25575
-        entrypoint: ["java", "-Xms${JVM_HEAP_SIZE}", "-Xmx${JVM_HEAP_SIZE}", "-jar", "${SERVER_JAR}", "${OPTION}"]
+        entrypoint: ["/bin/bash", "./main.sh"]
