@@ -1,3 +1,5 @@
 minecraft/
 backup/
 newrelic/
+
+.env.*

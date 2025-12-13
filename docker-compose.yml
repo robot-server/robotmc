@@ -11,3 +11,17 @@ services:
             - ${SERVER_PORT}:25565
             - ${RCON_PORT}:25575
         entrypoint: ["/bin/bash", "./main.sh"]
+    s3-sync:
+        image: amazon/aws-cli:latest
+        restart: always
+        volumes:
+            - ${MINECRAFT_DIR}:/minecraft
+            - ./:/robotmc
+        working_dir: /robotmc
+        environment:
+            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
+            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
+            - AWS_ENDPOINT_URL_S3=${AWS_ENDPOINT_URL_S3}
+            - S3_BUCKET_NAME=${S3_BUCKET_NAME}
+            - S3_BUCKET_PATH=${S3_BUCKET_PATH}
+        entrypoint: ["/bin/bash", "./s3-sync.sh"]
