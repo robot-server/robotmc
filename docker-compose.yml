@@ -5,6 +5,7 @@ services:
             - ${MINECRAFT_DIR}:/minecraft
             - ./:/robotmc
             - ./backup:/backup
+            - ./newrelic:/newrelic
         working_dir: /robotmc
         ports:
             - ${SERVER_PORT}:25565
