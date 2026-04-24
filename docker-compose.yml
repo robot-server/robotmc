@@ -1,27 +1,52 @@
 services:
     minecraft:
-        image: eclipse-temurin:21
+        image: itzg/minecraft-server:${MINECRAFT_IMAGE_TAG:?Set MINECRAFT_IMAGE_TAG}
+        restart: unless-stopped
+        tty: true
+        stdin_open: true
         volumes:
-            - ${MINECRAFT_DIR}:/minecraft
-            - ./:/robotmc
-            - ./backup:/backup
-            - ./newrelic:/newrelic
-        working_dir: /robotmc
+            - ${MINECRAFT_DIR}:/data
+            - ./newrelic:/newrelic:ro
         ports:
             - ${SERVER_PORT}:25565
-            - ${RCON_PORT}:25575
-        entrypoint: ["/bin/bash", "./main.sh"]
-    s3-sync:
-        image: amazon/aws-cli:latest
-        restart: always
-        volumes:
-            - ${MINECRAFT_DIR}:/minecraft
-            - ./:/robotmc
-        working_dir: /robotmc
         environment:
-            - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-            - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-            - AWS_ENDPOINT_URL_S3=${AWS_ENDPOINT_URL_S3}
-            - S3_BUCKET_NAME=${S3_BUCKET_NAME}
-            - S3_BUCKET_PATH=${S3_BUCKET_PATH}
-        entrypoint: ["/bin/bash", "./s3-sync.sh"]
+            EULA: "TRUE"
+            TYPE: "${MINECRAFT_TYPE:?Set MINECRAFT_TYPE}"
+            VERSION: "${MINECRAFT_VERSION:?Set MINECRAFT_VERSION}"
+            MEMORY: "${JVM_HEAP_SIZE}"
+            JVM_OPTS: "${JVM_OPTS}"
+            GUI: "FALSE"
+            ENABLE_RCON: "TRUE"
+            RCON_PORT: "${RCON_PORT}"
+            RCON_PASSWORD: "${RCON_PASSWORD:?Set RCON_PASSWORD}"
+
+    mc-backup:
+        image: itzg/mc-backup:latest
+        restart: unless-stopped
+        depends_on:
+            minecraft:
+                condition: service_healthy
+        volumes:
+            - ${MINECRAFT_DIR}:/data:ro
+            - ./backup:/backups
+        environment:
+            BACKUP_METHOD: "${BACKUP_METHOD}"
+            BACKUP_INTERVAL: "${BACKUP_INTERVAL}"
+            INITIAL_DELAY: "${BACKUP_INITIAL_DELAY}"
+            BACKUP_NAME: "${BACKUP_NAME}"
+            PRUNE_BACKUPS_DAYS: "${BACKUP_PRUNE_DAYS}"
+            TAR_COMPRESS_METHOD: "${BACKUP_COMPRESS_METHOD}"
+            RCLONE_COMPRESS_METHOD: "${BACKUP_COMPRESS_METHOD}"
+            RCLONE_REMOTE: "s3"
+            RCLONE_DEST_DIR: "${S3_BUCKET_NAME:?Set S3_BUCKET_NAME}${S3_BUCKET_PATH:+/}${S3_BUCKET_PATH}"
+            RCLONE_CONFIG_S3_TYPE: "s3"
+            RCLONE_CONFIG_S3_PROVIDER: "${S3_PROVIDER:?Set S3_PROVIDER}"
+            RCLONE_CONFIG_S3_REGION: "${S3_REGION}"
+            RCLONE_CONFIG_S3_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID:?Set AWS_ACCESS_KEY_ID}"
+            RCLONE_CONFIG_S3_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY:?Set AWS_SECRET_ACCESS_KEY}"
+            RCLONE_CONFIG_S3_ENDPOINT: "${AWS_ENDPOINT_URL_S3:?Set AWS_ENDPOINT_URL_S3}"
+            INCLUDES: "${BACKUP_INCLUDES}"
+            EXCLUDES: "${BACKUP_EXCLUDES}"
+            RCON_HOST: minecraft
+            RCON_PORT: "${RCON_PORT}"
+            RCON_PASSWORD: "${RCON_PASSWORD}"

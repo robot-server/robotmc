@@ -1,5 +1,8 @@
 minecraft/
 backup/
 newrelic/
+.DS_Store
 
+.env
 .env.*
+!.env.example
