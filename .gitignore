@@ -1,6 +1,7 @@
 minecraft/
 backup/
 newrelic/
+rcon/
 .DS_Store
 
 .env

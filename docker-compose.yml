@@ -50,3 +50,22 @@ services:
             RCON_HOST: minecraft
             RCON_PORT: "${RCON_PORT}"
             RCON_PASSWORD: "${RCON_PASSWORD}"
+
+    rcon:
+        image: itzg/rcon:latest
+        restart: unless-stopped
+        depends_on:
+            minecraft:
+                condition: service_healthy
+        volumes:
+            - ./rcon:/opt/rcon-web-admin/db
+        ports:
+            - ${RCON_WEB_PORT:-4326}:4326
+            - ${RCON_WEBSOCKET_PORT:-4327}:4327
+        environment:
+            RWA_USERNAME: "${RCON_WEB_USERNAME:-admin}"
+            RWA_PASSWORD: "${RCON_WEB_PASSWORD:?Set RCON_WEB_PASSWORD}"
+            RWA_ADMIN: "TRUE"
+            RWA_RCON_HOST: minecraft
+            RWA_RCON_PORT: "${RCON_PORT}"
+            RWA_RCON_PASSWORD: "${RCON_PASSWORD:?Set RCON_PASSWORD}"
