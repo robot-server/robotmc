@@ -1,7 +1,15 @@
+x-logging: &default-logging
+    driver: json-file
+    options:
+        max-size: "10m"
+        max-file: "5"
+        compress: "true"
+
 services:
     minecraft:
         image: itzg/minecraft-server:${MINECRAFT_IMAGE_TAG:?Set MINECRAFT_IMAGE_TAG}
         restart: unless-stopped
+        logging: *default-logging
         tty: true
         stdin_open: true
         volumes:
@@ -23,6 +31,7 @@ services:
     mc-backup:
         image: itzg/mc-backup:latest
         restart: unless-stopped
+        logging: *default-logging
         depends_on:
             minecraft:
                 condition: service_healthy
@@ -54,6 +63,7 @@ services:
     rcon:
         image: itzg/rcon:latest
         restart: unless-stopped
+        logging: *default-logging
         depends_on:
             minecraft:
                 condition: service_healthy
